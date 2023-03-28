@@ -12,7 +12,7 @@ func main() {
 	client := &http.Client{}
 
 	// create request to be signed
-	req, err := http.NewRequest("GET", "https://api.letterboxd.com/api/v0/film/lScm", nil)
+	req, err := http.NewRequest("GET", "https://st.letterboxd.com/api/v0/film/lScm", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,13 +20,13 @@ func main() {
 	// sign it!
 	signRequest(req)
 
-	// TODO: send it!
+	// send it!
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// read body
+	// read it!
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)

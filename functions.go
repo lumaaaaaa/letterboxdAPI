@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	b64 "encoding/base64"
 	"encoding/hex"
+	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -26,6 +29,7 @@ const (
 	SiteURL = "https://api.letterboxd.com"
 )
 
+// I DON'T HANDLE AUTHENTICATION, if you must handle authentication, set the header yourself!
 func signRequest(request *http.Request) {
 	method := request.Method
 	url := request.URL
@@ -44,6 +48,15 @@ func signRequest(request *http.Request) {
 	url.RawQuery = query.Encode()
 
 	var body []byte
+	if request.Body != nil {
+		var err error
+		body, err = io.ReadAll(request.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	request.Body = io.NopCloser(bytes.NewReader(body))
 
 	// generate and set signature parameter
 	query.Set("signature", signature(method, url.String(), body))
